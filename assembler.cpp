@@ -7,6 +7,7 @@ Assembler::Assembler()
 Assembler::Assembler(QStringList list) :
     list(list)
 {
+    //initialize related table
     initRegSet();
     initFun();
     initInstSet();
@@ -20,16 +21,16 @@ Assembler::Assembler(QStringList list) :
 
 void Assembler::assemble() {
 
-    int count = 0;
+    int count = 0;//line number
 
     for(auto s : list) {
-        if(!s.isEmpty()) {
-            if(s.contains(':')) {
+        if(!s.isEmpty()) { //ignore empty line
+            if(s.contains(':')) { // check tag
                 QStringList temp = s.split(':');
-                symbolTable[temp[0].trimmed()] = count;
-                if(temp.size() == 1) {
+                symbolTable[temp[0].trimmed()] = count; //insert in the symble table in the format <tag_name, line number>
+                if(temp.size() == 1) { // only tag eg: label:
                     continue;
-                } else {
+                } else { // capture the instruction
                     QString inst(temp[1].trimmed());
                     if(inst.isEmpty()) {
                         continue;
@@ -38,24 +39,29 @@ void Assembler::assemble() {
                     }
                 }
             }
-            s = s.trimmed();
+
+            s = s.trimmed(); //ignore space
+
             int index = s.indexOf("//");
-            if(index != -1) {
+            if(index != -1) {  //delete comment
                 s = s.mid(0, index);
                 s = s.trimmed();
             }
-            if(s.isEmpty()) {
+
+            if(s.isEmpty()) { //eg. label: //xxxxxx
                 continue;
             }
-            //decode inst
-            index = s.indexOf(" ");
+
+            //decode instructon
+            index = s.indexOf(" ");// opcode oprand eg. add $s1, $s3, $s2
             QString instcode;
             QString label;
             QString opcode = s.mid(0, index).toLower();
             QString oprand = s.mid(index+1).trimmed();
             QRegExp re;
             switch (instTypeSet[opcode]) {
-            case 0:
+            case 0: //eg. add/sub.....
+                //format: 000000 rs rt rd shmt fun
                 re = QRegExp("\\s*\\$([a-zA-Z0-9]+)\\s*,\\s*\\$([a-zA-Z0-9]+)\\s*,\\s*\\$([a-zA-Z0-9]+)");
                 instcode += "000000";
                 re.indexIn(oprand);
@@ -66,7 +72,9 @@ void Assembler::assemble() {
                 instcode += Fun[opcode];
                 instcode = _32bitToHexFormat(instcode);
                 break;
-            case 1:
+            case 1: //eg. lw/sw
+                //lw $s0, 20($s1) / lw $s0, ($s1) / lw $s0, 0xffff($s1) / lw $s0, -20($s1)
+                //format: opcode rs rt imm
                 re = QRegExp("\\s*\\$([a-zA-Z0-9]+)\\s*,\\s*(0x)?(\\-)?([0-9a-zA-Z]*)[(]\\$([a-zA-Z0-9]+)[)]");
                 instcode += instSet[opcode];
                 re.indexIn(oprand);
@@ -75,53 +83,56 @@ void Assembler::assemble() {
                 if(re.cap(2).isEmpty()) {
                     if(re.cap(4).isEmpty()) {
                         instcode += "0000000000000000";
-                    } else if(re.cap(3).isEmpty()) {
+                    } else if(re.cap(3).isEmpty()) { //positive
                         instcode += tenToString_nbit(static_cast<unsigned>(re.cap(4).toInt()), 16);
-                    } else {
+                    } else { //negative 2's complement
                         instcode += tenToString_nbit(static_cast<unsigned>(~re.cap(4).toInt()+1), 16);
                     }
-                } else {
-                    instcode += Ext_n(hexTobit(re.cap(4)));
+                } else { //0xffff
+                    instcode += Unext_n(hexTobit(re.cap(4)));
                 }
                 instcode = _32bitToHexFormat(instcode);
                 break;
-            case 2:
+            case 2://eg. addi/andi....
+                //format: opcode rs rt imm
                 re = QRegExp("\\s*\\$([a-zA-Z0-9]+)\\s*,\\s*\\$([a-zA-Z0-9]+)\\s*,\\s*(0x)?(\\-)?([0-9a-zA-Z]+)");
                 instcode += instSet[opcode];
                 re.indexIn(oprand);
                 instcode += regSet[re.cap(2).toLower()];
                 instcode += regSet[re.cap(1).toLower()];
-                if(re.cap(3).isEmpty()) {
+                if(re.cap(3).isEmpty()) { // the same as lw/sw
                     if(re.cap(4).isEmpty()) {
                         instcode += tenToString_nbit(static_cast<unsigned>(re.cap(5).toInt()), 16);
                     } else {
                         instcode += tenToString_nbit(static_cast<unsigned>(~re.cap(5).toInt()+1), 16);
                     }
                 } else {
-                    instcode += Ext_n(hexTobit(re.cap(5)));
+                    instcode += Unext_n(hexTobit(re.cap(5)));
                 }
                 instcode = _32bitToHexFormat(instcode);
                 break;
-            case 3:
+            case 3: //eg. beq/bne
+                //format: opcode rs rt label(imm)
                 re = QRegExp("\\s*\\$([a-zA-Z0-9]+)\\s*,\\s*\\$([a-zA-Z0-9]+)\\s*,\\s*([a-zA-Z_][0-9a-zA-Z_]*)");
                 instcode += instSet[opcode];
                 re.indexIn(oprand);
                 instcode += regSet[re.cap(1).toLower()];
                 instcode += regSet[re.cap(2).toLower()];
                 label = re.cap(3);
-                if(symbolTable.count(label) == 1) {
+                if(symbolTable.count(label) == 1) { //lookup label have been scanned?
                     instcode += tenToString_nbit(static_cast<unsigned>(symbolTable[label]-(count + 1)), 16);
                     instcode = _32bitToHexFormat(instcode);
                 } else {
                    instcode += "0000000000000000";
-                   resolve_branch[count] = label;
+                   resolve_branch[count] = label;//resolve after the pass
                 }
 
                 break;
-            case 4:
+            case 4://eg. j/jal
+                //format: opcode (label)imm
                 instcode += instSet[opcode];
                 label = oprand.trimmed();
-                if(symbolTable.count(label) == 1) {
+                if(symbolTable.count(label) == 1) { //lookup label have been scanned?
                     instcode += tenToString_nbit(static_cast<unsigned>(symbolTable[label]), 26);
                     instcode = _32bitToHexFormat(instcode);
                 } else {
@@ -130,7 +141,8 @@ void Assembler::assemble() {
                 }
 
                 break;
-            case 5:
+            case 5: //eg. srl/sll
+                //format: 000000 00000 rt rd shmt fun
                 re = QRegExp("\\s*\\$([0-9a-zA-Z]+)\\s*,\\s*\\$([0-9a-zA-Z]+)\\s*,\\s*(0x)?([0-9a-zA-Z]+)");
                 instcode += "00000000000";
                 re.indexIn(oprand);
@@ -139,12 +151,12 @@ void Assembler::assemble() {
                 if(re.cap(3).isEmpty()) {
                     instcode += tenToString_nbit(static_cast<unsigned>(re.cap(4).toInt()));
                 } else {
-                    instcode += Ext_n(hexTobit(re.cap(4)), 5);
+                    instcode += Unext_n(hexTobit(re.cap(4)), 5);
                 }
                 instcode += Fun[opcode];
                 instcode = _32bitToHexFormat(instcode);
                 break;
-            case 6:
+            case 6: //eg. jr
                 re = QRegExp("\\s*\\$([0-9a-zA-Z]+)\\s*");
                 re.indexIn(oprand);
                 instcode += "000000";
@@ -153,7 +165,7 @@ void Assembler::assemble() {
                 instcode += Fun[opcode];
                 instcode = _32bitToHexFormat(instcode);
                 break;
-            case 7:
+            case 7: //eg. jalr
                 re = QRegExp("\\s*\\$([0-9a-zA-Z]+)\\s*,\\s*\\$([0-9a-zA-Z]+)");
                 re.indexIn(oprand);
                 instcode += "000000";
@@ -164,7 +176,7 @@ void Assembler::assemble() {
                 instcode += Fun[opcode];
                 instcode = _32bitToHexFormat(instcode);
                 break;
-            case 8:
+            case 8: //eg. lui
                 re = QRegExp("\\s*\\$([0-9a-zA-Z]+)\\s*,\\s*(0x)?(-)?([0-9a-zA-Z]+)");
                 re.indexIn(oprand);
                 instcode += instSet[opcode];
@@ -177,7 +189,7 @@ void Assembler::assemble() {
                         instcode += tenToString_nbit(static_cast<unsigned>(~re.cap(4).toInt()+1), 16);
                     }
                 } else {
-                    instcode += Ext_n(hexTobit(re.cap(4)));
+                    instcode += Unext_n(hexTobit(re.cap(4)));
                 }
                 instcode = _32bitToHexFormat(instcode);
                 break;
@@ -344,15 +356,16 @@ const QString Assembler::tenToString_nbit(unsigned int x, int n) {
     QString res;
     int i = 0;
 
-    while(x > 0) {
+    while(x > 0) { //mod2
         res = _1bitToQChar_2(x%2) + res;
         x /= 2;
         i++;
     }
-    for(int j = n-i; j > 0; j--) {
+
+    for(int j = n-i; j > 0; j--) { //zero-extend
         res = '0' + res;
     }
-    if(res.size() > n) {
+    if(res.size() > n) { //truncate
         res = res.mid(res.size() - n);
     }
     return res;
@@ -378,12 +391,14 @@ const QString Assembler::hexTobit(const QString& x) {
     return res;
 }
 
-const QString Assembler::Ext_n(const QString& s, int n) {
+const QString Assembler::Unext_n(const QString& s, int n) {
     QString res(s);
     int size = s.size();
     for(int i = size; i < n; i++) {
         res = '0' + res;
     }
+    if(size > n)
+        res = res.mid(size - n);
     return res;
 }
 
@@ -436,6 +451,7 @@ void Assembler::initInstTypeSet() {
 }
 
 void Assembler::initRegSet() {
+    //e.g regSet["zero"] = "00000"
     QString t[numOfReg] = {"zero", "at", "v0", "v1", "a0", "a1", "a2", "a3", "t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7",
                            "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "t8", "t9", "k0", "k1", "gp", "sp", "fp", "ra"};
     for(int i = 0; i < numOfReg; i++) {

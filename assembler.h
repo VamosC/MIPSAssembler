@@ -30,7 +30,7 @@ private:
     const QString hexTobit(const QString& x);
     const QChar _1bitToQChar_2(int x);
     const QString tenToString_nbit(unsigned int x, int n=5);
-    const QString Ext_n(const QString& s, int n=16);
+    const QString Unext_n(const QString& s, int n=16);
 
     static const int numOfReg = 32;
 

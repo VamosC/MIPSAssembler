@@ -13,6 +13,7 @@ void CodeEdit::keyPressEvent(QKeyEvent *e) {
     }
 }
 
+//get content of plaintext
 const QStringList CodeEdit::getPlainText() {
     QStringList list;
     int count = this->document()->blockCount();
