@@ -1,8 +1,8 @@
 #ifndef INSTMEM_H
 #define INSTMEM_H
 
-#include<vector>
-#include<QStringList>
+#include <vector>
+#include <QStringList>
 class InstMem
 {
 public:
@@ -11,6 +11,7 @@ public:
     void setInst(QStringList list);
     int getSize() const;
     int getLineNum(int index) const;
+    bool isEmpty();
     const QString getInst(int index) const;
     ~InstMem() {}
 private:

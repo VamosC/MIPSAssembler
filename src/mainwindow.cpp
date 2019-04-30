@@ -4,7 +4,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    mode_debug(false)
+    debugger(nullptr)
 {
     ui->setupUi(this);
     codeWindow = this->findChild<CodeEdit*>("CodeWindow");
@@ -16,33 +16,34 @@ MainWindow::MainWindow(QWidget *parent) :
     initFileAction();
     initGenerate();
     initDebug();
-    Highlighter* h = new Highlighter(codeWindow->document());
+    h = new Highlighter(codeWindow->document());
 //    codeWindow->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
 }
 
 MainWindow::~MainWindow()
 {
+    delete h;
     delete ui;
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
-    if(watched == codeWindow) {
-        if(event->type() == QEvent::KeyPress) {
-            if(mode_debug)
-                return true;
-            else
-                return false;
-        }
-    } else {
-        if(event->type() == QEvent::KeyPress) {
-            QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-            if((keyEvent->modifiers() == Qt::ControlModifier) && (keyEvent->key() == Qt::Key_1)) {
-                debugWindow->changeVisible();
-                return true;
-            } else if((keyEvent->modifiers() == Qt::ControlModifier) && (keyEvent->key() == Qt::Key_2)) {
-                consoleWindow->changeVisible();
+    if(event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+        if(keyEvent->key() == Qt::Key_Escape) {
+            if(codeWindow->getMode()) {
+                codeWindow->setMode(false);
+                codeWindow->setReadOnly(false);
+                codeWindow->displayCurrentLine();
+                consoleWindow->clear();
+                delete debugger;
                 return true;
             }
+        } else if((keyEvent->modifiers() == Qt::ControlModifier) && (keyEvent->key() == Qt::Key_1)) {
+            debugWindow->changeVisible();
+            return true;
+        } else if((keyEvent->modifiers() == Qt::ControlModifier) && (keyEvent->key() == Qt::Key_2)) {
+            consoleWindow->changeVisible();
+            return true;
         }
     }
     return false;
@@ -60,6 +61,9 @@ void MainWindow::openFile() {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QTextCodec::setCodecForLocale(codec);
     QString fileName = QFileDialog::getOpenFileName(this);
+    if(fileName.isEmpty()) {
+        return;
+    }
     QFile file(fileName);
     if(!file.open(QFile::ReadOnly | QFile::Text)) {
         QMessageBox::warning(this, tr("MIPS Assembler"), tr("无法读取文件:%1\n%2.").arg(fileName).arg(file.errorString()));
@@ -204,17 +208,33 @@ void MainWindow::disassemble() {
 
 void MainWindow::initDebug() {
     QAction *actionStart = findChild<QAction*>("actionStart");
+    QAction *actionSingle_step = findChild<QAction*>("actionSingle_step");
     connect(actionStart, SIGNAL(triggered()), this, SLOT(debug()));
+    connect(actionSingle_step, SIGNAL(triggered()), this, SLOT(singleStep()));
 }
 
 void MainWindow::debug() {
-//    codeWindow->setReadOnly(true);
-    mode_debug = !mode_debug;
+    consoleWindow->setText("In the debug mode, press esc to exist......");
+    codeWindow->setMode(true);
+    codeWindow->setReadOnly(true);
+
     QStringList input = codeWindow->getPlainText();
     Assembler assembler(input);
     assembler.process();
     InstMem output = assembler.getInstMem();
-    Debugger debugger;
-    debugger.setInst(output);
-    debugger.next();
+    debugger = new Debugger();
+    debugger->setInst(output);
+    codeWindow->changeCursor(debugger->getNextPC());
+}
+
+void MainWindow::singleStep() {
+    if(debugger->next()) {
+        codeWindow->changeCursor(debugger->getNextPC());
+    } else {
+       codeWindow->setMode(false);
+       codeWindow->setReadOnly(false);
+       codeWindow->displayCurrentLine();
+       consoleWindow->clear();
+       delete debugger;
+    }
 }

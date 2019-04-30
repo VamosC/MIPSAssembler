@@ -13,6 +13,7 @@
 #include <QTextBrowser>
 #include <QStandardItemModel>
 #include <QKeyEvent>
+#include <QMouseEvent>
 #include <QTextCodec>
 #include <QString>
 #include <QFileDialog>
@@ -36,13 +37,14 @@ public:
     bool eventFilter(QObject *watched, QEvent *event);
 
 public slots:
-     void openFile();
-     void saveFile();
-     void assemble();
-     void disassemble();
-     void generateCoeAsm();
-     void generate();
-     void debug();
+    void openFile();
+    void saveFile();
+    void assemble();
+    void disassemble();
+    void generateCoeAsm();
+    void generate();
+    void debug();
+    void singleStep();
 
 private:
     void initFileAction();
@@ -54,8 +56,9 @@ private:
     CodeEdit *codeWindow;
     console *consoleWindow;
     DebugWin *debugWindow;
+    Highlighter* h;
+    Debugger* debugger;
 
-    bool mode_debug;
 };
 
 #endif // MAINWINDOW_H

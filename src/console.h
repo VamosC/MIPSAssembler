@@ -1,8 +1,8 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include<QTextBrowser>
-#include<QKeyEvent>
+#include <QTextBrowser>
+#include <QKeyEvent>
 
 class console : public QTextBrowser
 {

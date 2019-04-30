@@ -1,7 +1,8 @@
 #include "debugwin.h"
 
 DebugWin::DebugWin(QWidget *parent) :
-    QTableView (parent), status(true)
+    QTableView (parent),
+    status(true)
 {
     setStyleSheet("QTableView{selection-background-color:transparent;}"); //remove selection-color (default blue)
     horizontalHeader()->hide();

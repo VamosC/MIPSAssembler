@@ -1,16 +1,26 @@
 #include "codeedit.h"
 
 CodeEdit::CodeEdit(QWidget *parent) :
-    QPlainTextEdit (parent)
+    QPlainTextEdit (parent),
+    mode_debug(false)
 {
     initSlots();
 }
 
 void CodeEdit::keyPressEvent(QKeyEvent *e) {
     QPlainTextEdit::keyPressEvent(e);
-    if(e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter) {
-        qDebug() << "Enter" << endl;
-    }
+}
+
+void CodeEdit::mousePressEvent(QMouseEvent *e) {
+    if(mode_debug)
+        return;
+    QPlainTextEdit::mousePressEvent(e);
+}
+
+void CodeEdit::mouseDoubleClickEvent(QMouseEvent *e) {
+    if(mode_debug)
+        return;
+    QPlainTextEdit::mouseDoubleClickEvent(e);
 }
 
 //get content of plaintext
@@ -27,12 +37,27 @@ void CodeEdit::initSlots() {
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(displayCurrentLine()));
 }
 
+void CodeEdit::changeCursor(int index) {
+    QTextCursor cursor(document());
+    cursor.setPosition(document()->findBlockByLineNumber(index).position());
+    setTextCursor(cursor);
+    displayCurrentLine();
+}
+
 void CodeEdit::displayCurrentLine() {
     QList<QTextEdit::ExtraSelection> extras;
+    QTextEdit::ExtraSelection sel;
     if(!isReadOnly()) {
-        QTextEdit::ExtraSelection sel;
 
-        QColor lineColor = QColor(Qt::gray).lighter(30);
+        QColor lineColor = QColor(Qt::gray).lighter(35);
+
+        sel.format.setBackground(lineColor);
+        sel.format.setProperty(QTextFormat::FullWidthSelection, true);
+        sel.cursor = textCursor();
+        sel.cursor.clearSelection();
+        extras.append(sel);
+    } else {
+        QColor lineColor = QColor(Qt::yellow).lighter(35);
 
         sel.format.setBackground(lineColor);
         sel.format.setProperty(QTextFormat::FullWidthSelection, true);
@@ -42,4 +67,12 @@ void CodeEdit::displayCurrentLine() {
     }
 
     setExtraSelections(extras);
+}
+
+void CodeEdit::setMode(bool mode) {
+    mode_debug = mode;
+}
+
+bool CodeEdit::getMode() const {
+    return mode_debug;
 }

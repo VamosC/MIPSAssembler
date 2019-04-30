@@ -2,7 +2,9 @@
 
 Machine::Machine() {}
 
-Machine::Machine(QStringList list) : list(list){
+Machine::Machine(QStringList list) :
+    list(list)
+{
     initInstTypeSet();
 }
 

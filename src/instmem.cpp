@@ -2,6 +2,10 @@
 
 InstMem::InstMem(){}
 
+bool InstMem::isEmpty() {
+    return lineNum.empty() && inst.empty();
+}
+
 int InstMem::getLineNum(int index) const {
     return lineNum[index];
 }
