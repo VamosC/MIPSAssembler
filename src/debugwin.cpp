@@ -18,25 +18,12 @@ void DebugWin::changeVisible() {
 }
 
 void DebugWin::initModel() {
-    model = new QStandardItemModel(this);
-    model->setColumnCount(2);
-    for(int i = 0; i < numOfReg; i++) {
-        model->setItem(i+1, 0, new QStandardItem("$"+t[i]));
-        model->setItem(i+1, 1, new QStandardItem("00000000"));
-    }
-    model->setItem(0, 0, new QStandardItem("PC"));
-    model->setItem(0, 1, new QStandardItem("00000000"));
+    model = new Regs(this);
     setModel(model);
 }
 
-void DebugWin::changeData(int index, QString value) {
-    model->setItem(index, 1, new QStandardItem(value));
-}
-
-void DebugWin::resetData() {
-    for(int i = 0; i < numOfReg; i++)
-        changeData(i+1, "00000000");
-    changeData(0, "00000000");
+Regs* DebugWin::getRegs() const {
+    return  model;
 }
 
 DebugWin::~DebugWin() {

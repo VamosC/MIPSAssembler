@@ -21,6 +21,8 @@ protected:
     const QChar _1bitToQChar_2(int x);
     const QString tenToString_nbit(unsigned int x, int n=5);
     const QString Unext_n(const QString& s, int n=16);
+    const QString Ext_n(const QString& s, int n=32);
+    int stringToInt(const QString& s, int base=2);
 };
 
 #endif // BITSKILLER_H

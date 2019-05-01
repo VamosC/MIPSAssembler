@@ -217,12 +217,12 @@ void MainWindow::debug() {
     consoleWindow->setText("In the debug mode, press esc to exist......");
     codeWindow->setMode(true);
     codeWindow->setReadOnly(true);
-
     QStringList input = codeWindow->getPlainText();
     Assembler assembler(input);
     assembler.process();
     InstMem output = assembler.getInstMem();
-    debugger = new Debugger();
+    debugWindow->getRegs()->reset();
+    debugger = new Debugger(debugWindow->getRegs());
     debugger->setInst(output);
     codeWindow->changeCursor(debugger->getNextPC());
 }

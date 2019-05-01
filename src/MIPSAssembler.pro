@@ -37,7 +37,10 @@ SOURCES += \
     controller.cpp \
     bitskiller.cpp \
     disassembler.cpp \
-    machine.cpp
+    machine.cpp \
+    register.cpp \
+    regs.cpp \
+    alu.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -51,7 +54,10 @@ HEADERS += \
     controller.h \
     bitskiller.h \
     disassembler.h \
-    machine.h
+    machine.h \
+    register.h \
+    regs.h \
+    alu.h
 
 FORMS += \
         mainwindow.ui

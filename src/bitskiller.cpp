@@ -56,6 +56,47 @@ const QString BitsKiller::Unext_n(const QString& s, int n) {
     return res;
 }
 
+const QString BitsKiller::Ext_n(const QString &s, int n) {
+    QString res(s);
+    int size = s.size();
+    for(int i = size; i < n; i++) {
+        res = res[0] + res;
+    }
+    if(size > n)
+        res = res.mid(size - n);
+    return res;
+}
+
+int BitsKiller::stringToInt(const QString& s, int base) {
+    if(base == 2) {
+        if(s.size() < 32) {
+            return s.toInt(nullptr, base);
+        } else if(s.size() == 32){
+            if(s[0] == '0')
+                return s.toInt(nullptr, base);
+            else {
+                return static_cast<int>(s.toUInt(nullptr, base));
+            }
+        } else {
+            return 0;
+        }
+    } else if(base == 16) {
+        if(s.size() < 8) {
+            return s.toInt(nullptr, base);
+        } else if(s.size() == 8) {
+            if(hexTobit(s[0]).at(0) == '0') {
+                return s.toInt(nullptr, base);
+            } else {
+                return static_cast<int>(s.toUInt(nullptr, base));
+            }
+        } else {
+            return 0;
+        }
+    } else {
+       return 0;
+    }
+}
+
 void BitsKiller::initHexToBitTable() {
     hexToBitTable["0"] = "0000";
     hexToBitTable["1"] = "0001";
