@@ -1,8 +1,8 @@
 #ifndef DISASSEMBLER_H
 #define DISASSEMBLER_H
 
-#include "machine.h"
-#include "bitskiller.h"
+#include "utils/machine.h"
+#include "utils/bitskiller.h"
 #include <QStringList>
 #include <QString>
 #include <map>

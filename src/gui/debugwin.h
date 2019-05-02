@@ -1,7 +1,7 @@
 #ifndef DEBUGWIN_H
 #define DEBUGWIN_H
 
-#include "regs.h"
+#include "cpu/regs.h"
 #include <QWidget>
 #include <QTableView>
 #include <QHeaderView>

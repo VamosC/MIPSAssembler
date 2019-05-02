@@ -1,14 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "codeedit.h"
-#include "console.h"
-#include "debugwin.h"
-#include "assembler.h"
-#include "disassembler.h"
-#include "highlighter.h"
-#include "instmem.h"
-#include "debugger.h"
+#include "gui/codeedit.h"
+#include "gui/console.h"
+#include "gui/debugwin.h"
+#include "assembler/assembler.h"
+#include "disassembler/disassembler.h"
+#include "gui/highlighter.h"
+#include "cpu/instmem.h"
+#include "debugger/debugger.h"
 #include <QMainWindow>
 #include <QTextBrowser>
 #include <QStandardItemModel>

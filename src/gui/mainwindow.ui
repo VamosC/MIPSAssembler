@@ -286,17 +286,17 @@
   <customwidget>
    <class>CodeEdit</class>
    <extends>QPlainTextEdit</extends>
-   <header>CodeEdit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>DebugWin</class>
-   <extends>QTableView</extends>
-   <header>debugwin.h</header>
+   <header>gui/codeedit.h</header>
   </customwidget>
   <customwidget>
    <class>console</class>
    <extends>QTextBrowser</extends>
-   <header location="global">console.h</header>
+   <header>gui/console.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DebugWin</class>
+   <extends>QTableView</extends>
+   <header>gui/debugwin.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -1,7 +1,7 @@
 #ifndef REGS_H
 #define REGS_H
 
-#include "register.h"
+#include "cpu/register.h"
 #include <QString>
 #include <QStandardItemModel>
 

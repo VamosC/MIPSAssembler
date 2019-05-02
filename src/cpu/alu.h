@@ -1,7 +1,7 @@
 #ifndef ALU_H
 #define ALU_H
 
-#include "bitskiller.h"
+#include "utils/bitskiller.h"
 
 class ALU : public BitsKiller
 {

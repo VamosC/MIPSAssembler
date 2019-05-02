@@ -1,7 +1,7 @@
 #ifndef LINENUMBERAREA_H
 #define LINENUMBERAREA_H
 
-#include "codeedit.h"
+#include "gui/codeedit.h"
 #include <QPaintEvent>
 #include <QSize>
 #include <QWidget>

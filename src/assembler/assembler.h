@@ -1,9 +1,9 @@
 #ifndef ASSEMBLER_H
 #define ASSEMBLER_H
 
-#include "instmem.h"
-#include "bitskiller.h"
-#include "machine.h"
+#include "cpu/instmem.h"
+#include "utils/bitskiller.h"
+#include "utils/machine.h"
 #include <QString>
 #include <QChar>
 #include <QStringList>

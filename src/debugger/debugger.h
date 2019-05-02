@@ -1,11 +1,11 @@
 #ifndef DEBUGGER_H
 #define DEBUGGER_H
 
-#include "regs.h"
-#include "bitskiller.h"
-#include "instmem.h"
-#include "controller.h"
-#include "alu.h"
+#include "cpu/regs.h"
+#include "utils/bitskiller.h"
+#include "cpu/instmem.h"
+#include "cpu/controller.h"
+#include "cpu/alu.h"
 #include <map>
 
 class Debugger : public BitsKiller

@@ -26,44 +26,44 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp \
-    assembler.cpp \
-    highlighter.cpp \
-    debugwin.cpp \
-    codeedit.cpp \
-    console.cpp \
-    debugger.cpp \
-    instmem.cpp \
-    controller.cpp \
-    bitskiller.cpp \
-    disassembler.cpp \
-    machine.cpp \
-    register.cpp \
-    regs.cpp \
-    alu.cpp \
-    linenumberarea.cpp
+        gui/mainwindow.cpp \
+    assembler/assembler.cpp \
+    gui/highlighter.cpp \
+    gui/debugwin.cpp \
+    gui/codeedit.cpp \
+    gui/console.cpp \
+    debugger/debugger.cpp \
+    cpu/instmem.cpp \
+    cpu/controller.cpp \
+    utils/bitskiller.cpp \
+    disassembler/disassembler.cpp \
+    utils/machine.cpp \
+    cpu/register.cpp \
+    cpu/regs.cpp \
+    cpu/alu.cpp \
+    gui/linenumberarea.cpp
 
 HEADERS += \
-        mainwindow.h \
-    assembler.h \
-    highlighter.h \
-    debugwin.h \
-    codeedit.h \
-    console.h \
-    debugger.h \
-    instmem.h \
-    controller.h \
-    bitskiller.h \
-    disassembler.h \
-    machine.h \
-    register.h \
-    regs.h \
-    alu.h \
-    linenumberarea.h
+        gui/mainwindow.h \
+    assembler/assembler.h \
+    gui/highlighter.h \
+    gui/debugwin.h \
+    gui/codeedit.h \
+    gui/console.h \
+    debugger/debugger.h \
+    cpu/instmem.h \
+    cpu/controller.h \
+    utils/bitskiller.h \
+    disassembler/disassembler.h \
+    utils/machine.h \
+    cpu/register.h \
+    cpu/regs.h \
+    cpu/alu.h \
+    gui/linenumberarea.h
 
 FORMS += \
-        mainwindow.ui
-ICON += Icon.icns
+        gui/mainwindow.ui
+ICON += icon/Icon.icns
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
