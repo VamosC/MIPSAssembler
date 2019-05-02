@@ -22,6 +22,9 @@
 #include <QTextBlock>
 #include <QStringList>
 #include <QEvent>
+#include <QThread>
+#include <QMutex>
+#include <QDropEvent>
 
 namespace Ui {
 class MainWindow;
@@ -33,8 +36,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-    bool eventFilter(QObject *watched, QEvent *event);
+    ~MainWindow() override;
 
 public slots:
     void openFile();
@@ -45,20 +47,27 @@ public slots:
     void generate();
     void debug();
     void singleStep();
-
+    void debugRun();
+    void showHelp();
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
 private:
     void initFileAction();
     void initGenerate();
     void initConsole();
     void initDebug();
+    void initHelp();
 
     Ui::MainWindow *ui;
     CodeEdit *codeWindow;
     console *consoleWindow;
     DebugWin *debugWindow;
+    QAction *actionSingle_step;
+    QAction *actionStart;
+    QAction *actionRun;
     Highlighter* h;
     Debugger* debugger;
-
+    bool finish;
 };
 
 #endif // MAINWINDOW_H

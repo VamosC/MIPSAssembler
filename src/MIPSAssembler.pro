@@ -40,7 +40,8 @@ SOURCES += \
     machine.cpp \
     register.cpp \
     regs.cpp \
-    alu.cpp
+    alu.cpp \
+    linenumberarea.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -57,7 +58,8 @@ HEADERS += \
     machine.h \
     register.h \
     regs.h \
-    alu.h
+    alu.h \
+    linenumberarea.h
 
 FORMS += \
         mainwindow.ui

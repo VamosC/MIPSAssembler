@@ -1,5 +1,4 @@
 #include "debugger.h"
-#include <QDebug>
 Debugger::Debugger(Regs* registers) :
     regs(registers),
     current_ptr(0),
@@ -15,13 +14,12 @@ void Debugger::setInst(const InstMem& instructions) {
 }
 
 bool Debugger::next() {
-    if(current_ptr > size)
+    if(current_ptr >= size)
         return false;
     QString inst = hexTobit(instMem.getInst(current_ptr));
     Controller ctrl(inst.mid(0, 6), inst.mid(26, 6));
     QString address;
     QString PC_4 = tenToString_nbit(static_cast<unsigned>(4*(current_ptr+1)), 32);
-    qDebug() << inst << endl;
     if(ctrl.isALU()) {
         ALU myALU(ctrl.getALUCtrl());
         if(ctrl.isShift()) {
@@ -33,7 +31,13 @@ bool Debugger::next() {
             regs->setVal(inst.mid(16, 5).toInt(nullptr, 2), myALU.getRes());
             address = PC_4;
         } else if (ctrl.isImm()) {
-            myALU.run(regs->getVal(inst.mid(6, 5).toInt(nullptr, 2)), _32bitToHexFormat(Ext_n(inst.mid(16), 32)));
+            QString imm;
+            if(ctrl.isLogical()) {
+                imm = Unext_n(inst.mid(16), 32);
+            } else {
+                imm = Ext_n(inst.mid(16), 32);
+            }
+            myALU.run(regs->getVal(inst.mid(6, 5).toInt(nullptr, 2)), _32bitToHexFormat(imm));
             regs->setVal(inst.mid(11, 5).toInt(nullptr, 2), myALU.getRes());
             address = PC_4;
         } else if(ctrl.isSW()) {
@@ -73,7 +77,6 @@ bool Debugger::next() {
     }
     PC_out = instMem.getLineNum(address.toUInt(nullptr, 2)/4);
     current_ptr = address.toUInt(nullptr, 2)/4;
-    qDebug() << current_ptr << endl;
     regs->setVal(32, _32bitToHexFormat(address));
     return true;
 }

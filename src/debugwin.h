@@ -7,6 +7,7 @@
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QStandardItemModel>
+#include <QFont>
 
 class DebugWin : public QTableView
 {

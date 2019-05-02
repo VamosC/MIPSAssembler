@@ -22,6 +22,7 @@ public:
     bool isImm();
     bool isLui();
     bool isShift();
+    bool isLogical();
     int getALUCtrl();
 private:
     void initReverseInstSet();

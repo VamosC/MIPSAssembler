@@ -14,9 +14,9 @@ Assembler::Assembler(QStringList list) :
     initInstSet();
 }
 
-Assembler::~Assembler(){}
+Assembler::~Assembler() {}
 
-void Assembler::process() {
+void Assembler::process()  {
 
     int count = 0;//line number ignore no instruction line
     int line = 0;

@@ -16,8 +16,8 @@ class Assembler : public BitsKiller, public Machine
 public:
     Assembler();
     Assembler(QStringList list);
-    ~Assembler();
-    void process();
+    ~Assembler() override;
+    void process() override;
     const InstMem getInstMem() const;
 private:
     void initInstSet();

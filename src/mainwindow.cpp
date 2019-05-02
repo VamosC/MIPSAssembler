@@ -1,10 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    debugger(nullptr)
+    debugger(nullptr),
+    finish(false)
 {
     ui->setupUi(this);
     codeWindow = this->findChild<CodeEdit*>("CodeWindow");
@@ -13,9 +15,11 @@ MainWindow::MainWindow(QWidget *parent) :
     consoleWindow->installEventFilter(this);
     debugWindow->installEventFilter(this);
     codeWindow->installEventFilter(this);
+    codeWindow->setAcceptDrops(true);
     initFileAction();
     initGenerate();
     initDebug();
+    initHelp();
     h = new Highlighter(codeWindow->document());
 //    codeWindow->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
 }
@@ -31,10 +35,14 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
         QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
         if(keyEvent->key() == Qt::Key_Escape) {
             if(codeWindow->getMode()) {
+                finish = true;
                 codeWindow->setMode(false);
                 codeWindow->setReadOnly(false);
                 codeWindow->displayCurrentLine();
-                consoleWindow->clear();
+                consoleWindow->append("-> Stop debug...");
+                actionStart->setEnabled(true);
+                actionSingle_step->setEnabled(false);
+                actionRun->setEnabled(false);
                 delete debugger;
                 return true;
             }
@@ -77,8 +85,8 @@ void MainWindow::openFile() {
 }
 
 void MainWindow::saveFile() {
-//    QTextCodec *codec = QTextCodec::codecForName("GBK");
-//    QTextCodec::setCodecForLocale(codec);
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    QTextCodec::setCodecForLocale(codec);
     QString fileName = QFileDialog::getSaveFileName(this);
     if(fileName.isEmpty()) {
         return;
@@ -100,6 +108,17 @@ void MainWindow::saveFile() {
     file.write(res.toUtf8());
 }
 
+void MainWindow::initHelp() {
+    QAction* actionHelp = findChild<QAction*>("actionHelp");
+    connect(actionHelp, SIGNAL(triggered()), this, SLOT(showHelp()));
+}
+
+void MainWindow::showHelp() {
+    codeWindow->setEnabled(true);
+    codeWindow->setFocus();
+    codeWindow->clear();
+}
+
 void MainWindow::initGenerate() {
     QAction* generate_bit = findChild<QAction*>("generate");
     QAction* assemble_action = findChild<QAction*>("assemble");
@@ -118,7 +137,7 @@ void MainWindow::assemble() {
     Assembler assembler(list);
     assembler.process();
     QStringList res = assembler.getRes();
-    consoleWindow->append("output:");
+    consoleWindow->append("-> output:");
     for(auto s : res) {
         consoleWindow->append(s);
     }
@@ -207,16 +226,23 @@ void MainWindow::disassemble() {
 }
 
 void MainWindow::initDebug() {
-    QAction *actionStart = findChild<QAction*>("actionStart");
-    QAction *actionSingle_step = findChild<QAction*>("actionSingle_step");
+    actionStart = findChild<QAction*>("actionStart");
+    actionSingle_step = findChild<QAction*>("actionSingle_step");
+    actionRun = findChild<QAction*>("actionRun");
     connect(actionStart, SIGNAL(triggered()), this, SLOT(debug()));
     connect(actionSingle_step, SIGNAL(triggered()), this, SLOT(singleStep()));
+    connect(actionRun, SIGNAL(triggered()), this, SLOT(debugRun()));
+    actionSingle_step->setEnabled(false);
+    actionRun->setEnabled(false);
 }
 
 void MainWindow::debug() {
-    consoleWindow->setText("In the debug mode, press esc to exist......");
+    consoleWindow->append("-> In the debug mode, press esc to exist......");
     codeWindow->setMode(true);
     codeWindow->setReadOnly(true);
+    actionStart->setEnabled(false);
+    actionSingle_step->setEnabled(true);
+    actionRun->setEnabled(true);
     QStringList input = codeWindow->getPlainText();
     Assembler assembler(input);
     assembler.process();
@@ -225,6 +251,7 @@ void MainWindow::debug() {
     debugger = new Debugger(debugWindow->getRegs());
     debugger->setInst(output);
     codeWindow->changeCursor(debugger->getNextPC());
+    finish = false;
 }
 
 void MainWindow::singleStep() {
@@ -234,7 +261,27 @@ void MainWindow::singleStep() {
        codeWindow->setMode(false);
        codeWindow->setReadOnly(false);
        codeWindow->displayCurrentLine();
-       consoleWindow->clear();
+       consoleWindow->append("-> Exit successfully!");
+       actionStart->setEnabled(true);
+       actionSingle_step->setEnabled(false);
+       actionRun->setEnabled(false);
        delete debugger;
     }
+}
+
+void MainWindow::debugRun() {
+    while(!finish && debugger->next()) {
+        codeWindow->changeCursor(debugger->getNextPC());
+        QThread::msleep(100);
+    }
+    if(finish)
+        return;
+    codeWindow->setMode(false);
+    codeWindow->setReadOnly(false);
+    codeWindow->displayCurrentLine();
+    consoleWindow->append("-> Exit successfully!");
+    actionStart->setEnabled(true);
+    actionSingle_step->setEnabled(false);
+    actionRun->setEnabled(false);
+    delete debugger;
 }

@@ -4,7 +4,7 @@ DebugWin::DebugWin(QWidget *parent) :
     QTableView (parent),
     status(true)
 {
-    setStyleSheet("QTableView{selection-background-color:transparent;}"); //remove selection-color (default blue)
+    setStyleSheet("QTableView{selection-background-color:transparent;color:rgb(0, 242, 1);}"); //remove selection-color (default blue)
     horizontalHeader()->hide();
     horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     setEditTriggers(QAbstractItemView::NoEditTriggers); //no edit

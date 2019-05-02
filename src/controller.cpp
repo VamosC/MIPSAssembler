@@ -48,6 +48,16 @@ bool Controller::isSW() {
     return false;
 }
 
+bool Controller::isLogical() {
+    if(reverseInstSet[opcode].compare("ori") == 0)
+        return true;
+    if(reverseInstSet[opcode].compare("xori") == 0)
+        return true;
+    if(reverseInstSet[opcode].compare("andi") == 0)
+        return true;
+    return false;
+}
+
 bool Controller::isRR() {
     if(opcode.compare("000000")  == 0)
         return true;

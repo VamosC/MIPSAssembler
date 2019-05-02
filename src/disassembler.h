@@ -12,9 +12,9 @@ class Disassembler : public BitsKiller, public Machine
 public:
     Disassembler();
     Disassembler(QStringList list);
-    ~Disassembler();
+    ~Disassembler() override;
 
-    void process();
+    void process() override;
 private:
     void initReverseRegSet();
     void initReverseInstSet();

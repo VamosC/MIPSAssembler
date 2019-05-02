@@ -25,6 +25,7 @@ private:
     QTextCharFormat labelFormat;
     QTextCharFormat constantFormat;
     QTextCharFormat registerFormat;
+    QTextCharFormat commentFormat;
 };
 
 #endif // HIGNLIGHTER_H
