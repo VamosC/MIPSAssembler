@@ -33,7 +33,6 @@ void CodeEdit::mouseDoubleClickEvent(QMouseEvent *e) {
 void CodeEdit::dragEnterEvent(QDragEnterEvent *e) {
     fileName = e->mimeData()->urls()[0].fileName();
     e->acceptProposedAction();
-//    QPlainTextEdit::dragEnterEvent(e);
 }
 
 void CodeEdit::dragMoveEvent(QDragMoveEvent *e) {
@@ -49,9 +48,8 @@ void CodeEdit::dropEvent(QDropEvent *e) {
     QTextStream in(&file);
     setPlainText(in.readAll());
     moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-    setCursor(cursor());
+    this->parentWidget()->findChild<console*>("Console")->append("-> open file: " + e->mimeData()->urls()[0].toLocalFile());
     e->acceptProposedAction();
-//    QPlainTextEdit::dropEvent(e);
 }
 
 //get content of plaintext
@@ -59,7 +57,7 @@ const QStringList CodeEdit::getPlainText() {
     QStringList list;
     int count = this->document()->blockCount();
     for(int i = 0; i < count; i++) {
-        list << this->document()->findBlockByLineNumber(i).text();
+        list << this->document()->findBlockByNumber(i).text();
     }
     return list;
 }

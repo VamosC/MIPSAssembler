@@ -28,6 +28,9 @@
       <property name="focusPolicy">
        <enum>Qt::StrongFocus</enum>
       </property>
+      <property name="documentTitle">
+       <string/>
+      </property>
      </widget>
     </item>
     <item row="1" column="0">
@@ -87,7 +90,7 @@
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionundo"/>
+    <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
     <addaction name="separator"/>
     <addaction name="actionCopy"/>
@@ -105,6 +108,7 @@
     <addaction name="assemble"/>
     <addaction name="separator"/>
     <addaction name="disassemble"/>
+    <addaction name="disasm_coe"/>
    </widget>
    <widget class="QMenu" name="menuDebug">
     <property name="title">
@@ -119,8 +123,8 @@
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionHelp"/>
     <addaction name="actionManual"/>
+    <addaction name="About"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -141,10 +145,16 @@
    <property name="text">
     <string>Copy</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
   </action>
   <action name="actionPaste">
    <property name="text">
     <string>Paste</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
   <action name="open_file">
@@ -182,19 +192,28 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="actionundo">
+  <action name="actionUndo">
    <property name="text">
     <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
    </property>
   </action>
   <action name="actionRedo">
    <property name="text">
     <string>Redo</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
+   </property>
   </action>
   <action name="actionCut">
    <property name="text">
     <string>Cut</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
    </property>
   </action>
   <action name="assemble">
@@ -278,6 +297,19 @@
   <action name="actionHelp">
    <property name="text">
     <string>Help</string>
+   </property>
+  </action>
+  <action name="About">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="disasm_coe">
+   <property name="text">
+    <string>Disassemble from coe</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
    </property>
   </action>
  </widget>

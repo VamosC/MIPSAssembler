@@ -4,9 +4,10 @@
 #include "gui/codeedit.h"
 #include "gui/console.h"
 #include "gui/debugwin.h"
+#include "gui/highlighter.h"
 #include "assembler/assembler.h"
 #include "disassembler/disassembler.h"
-#include "gui/highlighter.h"
+#include "disassembler/preprocesser.h"
 #include "cpu/instmem.h"
 #include "debugger/debugger.h"
 #include <QMainWindow>
@@ -38,25 +39,38 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
 
-public slots:
+private slots:
+    void newFile();
     void openFile();
     void saveFile();
     void assemble();
-    void disassemble();
+    void disassemble_coe();
+    void disassemble_bin();
     void generateCoeAsm();
+    void generateCoeBin();
     void generate();
     void debug();
     void singleStep();
     void debugRun();
     void showHelp();
+    void editUndo();
+    void editCopy();
+    void editRedo();
+    void editPaste();
+    void editCut();
+    void showAbout();
+
 protected:
-    bool eventFilter(QObject *watched, QEvent *event) override;
+    bool eventFilter(QObject *, QEvent *event) override;
 private:
     void initFileAction();
     void initGenerate();
     void initConsole();
     void initDebug();
     void initHelp();
+    void initEdit();
+    void disassemble(QStringList& list);
+    void generateCoe(const QStringList& list);
 
     Ui::MainWindow *ui;
     CodeEdit *codeWindow;

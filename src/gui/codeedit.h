@@ -1,6 +1,7 @@
 #ifndef CODEEDIT_H
 #define CODEEDIT_H
 
+#include "gui/console.h"
 #include <QPlainTextEdit>
 #include <QKeyEvent>
 #include <QDebug>

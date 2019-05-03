@@ -41,7 +41,8 @@ SOURCES += \
     cpu/register.cpp \
     cpu/regs.cpp \
     cpu/alu.cpp \
-    gui/linenumberarea.cpp
+    gui/linenumberarea.cpp \
+    disassembler/preprocesser.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -59,7 +60,8 @@ HEADERS += \
     cpu/register.h \
     cpu/regs.h \
     cpu/alu.h \
-    gui/linenumberarea.h
+    gui/linenumberarea.h \
+    disassembler/preprocesser.h
 
 FORMS += \
         gui/mainwindow.ui
