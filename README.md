@@ -7,7 +7,7 @@
 </p>
 
 
-<img src="./asset/mips.jpeg" width=" 400" height="300" />
+<img align = "center" src="./asset/mips.jpeg" width=" 400" height="300" />
 
 
 ## Introduction
