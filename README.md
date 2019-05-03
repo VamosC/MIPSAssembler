@@ -220,6 +220,7 @@ ori $t2, $t2, 16
 - command + shift + A : assemble the .asm and output the result in the console
 - command + shift + D : dissemble from binary machine code, output file
 - command + D : dissemble from .coe, output file
+- command + M : mannual
 - F5 : start debug mode
 - F8 : single step debug mode
 - F9 : run the code in the debug mode
