@@ -1,12 +1,15 @@
 # MIPSAssembler
-
-## 目录
-- [ Introduction ](./README.md)
-
+<p align= "left">
+<img src="https://img.shields.io/badge/build-passing-brightgreen.svg"/>
+<img src="https://img.shields.io/badge/g%2B%2B-c%2B%2B11-yellow.svg"/>
+<img src="https://img.shields.io/badge/development-qt5.12.2-orange.svg"/>
+<img src="https://img.shields.io/badge/release-1.0.0-blue.svg"/>
+</p>
 
 ![](./asset/mips.jpeg)
 
 
+## Introduction
 
 This is a project for Computer Organization and Design course.
 
