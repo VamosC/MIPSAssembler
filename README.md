@@ -1,11 +1,16 @@
 # MIPSAssembler
 
-[TOC]
-## Introduction
-
+## 目录
+- [ Introduction ](./README.md)
 
 
 ![](./asset/mips.jpeg)
+
+
+
+This is a project for Computer Organization and Design course.
+
+The project is about mips assembler and disassembler  which support MIPS R2000 Assembly Language.
 
 
 
@@ -104,3 +109,4 @@ Support almost 84 instructions of MIPS R2000 Assembly Language
 - xor
 - xori
 
+## 
