@@ -6,9 +6,9 @@
 <img src="https://img.shields.io/badge/release-1.0.0-blue.svg"/>
 </p>
 
-
-<img align = "center" src="./asset/mips.jpeg" width=" 400" height="300" />
-
+<p align="center">
+<img src="./asset/mips.jpeg" width=" 400" height="300" />
+</p>
 
 ## Introduction
 
