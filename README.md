@@ -189,7 +189,7 @@ Support almost 84 instructions of MIPS R2000 Assembly Language
 ## Example
 ```assembly
 addi $t0, $t0, -1
-lui $t2, $t2, 0xf000
+lui $t2, 0xf000
 ori $t2, $t2, 16
 ```
 
