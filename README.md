@@ -1,8 +1,7 @@
 # MIPSAssembler
 
-<p align = "left">
+<p align = "center">
 <img src="./asset/mips.jpeg" width=" 400" height="300" />
-<img src="./asset/icon.jpeg" width=" 300" height="300" />
 </p>
 
 
